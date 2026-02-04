@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from './Button';
 import { BUSINESS_INFO, SERVICES } from '../constants';
 import { MapPin, User, Mail, Phone, Car, Calendar, Clock } from 'lucide-react';
-import { MapContainer, TileLayer, Circle, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, ZoomControl, Popup } from 'react-leaflet';
 
 const ContactCTA: React.FC = () => {
   const center: [number, number] = [34.0522, -118.2437]; // Los Angeles
@@ -165,11 +165,11 @@ const ContactCTA: React.FC = () => {
                <MapContainer 
                   center={center} 
                   zoom={10} 
-                  scrollWheelZoom={false} 
+                  scrollWheelZoom={true} 
                   className="w-full h-full z-0 outline-none"
                   zoomControl={false}
                   dragging={true}
-                  doubleClickZoom={false}
+                  doubleClickZoom={true}
                >
                   <TileLayer
                     attribution='&copy; <a href="https://carto.com/">CARTO</a>'
@@ -186,6 +186,12 @@ const ContactCTA: React.FC = () => {
                     }} 
                     radius={radius} 
                   >
+                    <Popup>
+                      <div className="font-sans text-slate-800">
+                        <strong className="block text-sm mb-1">Service Area</strong>
+                        <span className="text-xs">We provide mobile detailing services within this radius.</span>
+                      </div>
+                    </Popup>
                   </Circle>
                   <ZoomControl position="topright" />
                </MapContainer>
@@ -193,8 +199,8 @@ const ContactCTA: React.FC = () => {
                {/* Overlay Gradients */}
                <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent pointer-events-none z-[400]"></div>
               
-              <div className="absolute bottom-8 left-8 z-[500]">
-                <div className="bg-brand-black/90 backdrop-blur-md p-6 border border-white/10 max-w-xs shadow-lg">
+              <div className="absolute bottom-8 left-8 z-[500] pointer-events-none">
+                <div className="bg-brand-black/90 backdrop-blur-md p-6 border border-white/10 max-w-xs shadow-lg pointer-events-auto">
                     <div className="flex items-center mb-2">
                         <MapPin className="w-5 h-5 text-brand-accent mr-2" />
                         <span className="text-white font-heading font-bold">Service Coverage</span>
