@@ -56,13 +56,22 @@ const Services: React.FC = () => {
                 </ul>
               </div>
 
-              <Button 
-                href={BUSINESS_INFO.bookingLink} 
-                variant={pkg.isPopular ? 'primary' : 'secondary'}
-                fullWidth
-              >
-                Reserve Now
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button 
+                  href={BUSINESS_INFO.bookingLink} 
+                  variant={pkg.isPopular ? 'primary' : 'secondary'}
+                  fullWidth
+                >
+                  Reserve Now
+                </Button>
+                <Button 
+                  href={BUSINESS_INFO.bookingLink} 
+                  variant="secondary"
+                  fullWidth
+                >
+                  Book Now
+                </Button>
+              </div>
             </div>
           ))}
         </div>
