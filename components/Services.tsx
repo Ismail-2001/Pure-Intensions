@@ -25,7 +25,7 @@ const Services: React.FC = () => {
               className={`
                 group relative flex flex-col h-full p-8 md:p-10 transition-all duration-500
                 ${pkg.isPopular 
-                  ? 'bg-gradient-to-b from-slate-900 to-slate-950 border border-brand-accent/30 shadow-[0_0_50px_rgba(45,212,191,0.05)] transform md:-translate-y-4' 
+                  ? 'bg-gradient-to-b from-slate-900 to-slate-950 border border-brand-accent/30 transform md:-translate-y-4 animate-glow' 
                   : 'bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
               `}
             >

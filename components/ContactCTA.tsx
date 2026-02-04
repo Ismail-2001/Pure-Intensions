@@ -1,54 +1,200 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from './Button';
-import { BUSINESS_INFO } from '../constants';
-import { MapPin } from 'lucide-react';
+import { BUSINESS_INFO, SERVICES } from '../constants';
+import { MapPin, User, Mail, Phone, Car, Calendar, Clock } from 'lucide-react';
+import { MapContainer, TileLayer, Circle, ZoomControl } from 'react-leaflet';
 
 const ContactCTA: React.FC = () => {
+  const center: [number, number] = [34.0522, -118.2437]; // Los Angeles
+  const radius = 20000; // ~12 miles coverage
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    date: '',
+    time: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Booking Request:', formData);
+    alert(`Thank you, ${formData.name}. Your request for ${formData.service || 'service'} has been received. We will contact you at ${formData.phone} shortly.`);
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      service: '',
+      date: '',
+      time: ''
+    });
+  };
+
   return (
-    <section className="py-24 bg-brand-charcoal relative overflow-hidden border-t border-white/5">
+    <section id="booking" className="py-24 bg-brand-charcoal relative overflow-hidden border-t border-white/5">
       {/* Decorative Glow */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[100px] transform translate-x-1/2 -translate-y-1/2"></div>
       
       <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
+        <div className="flex flex-col lg:flex-row gap-16">
           
+          {/* Booking Form Section */}
           <div className="w-full lg:w-1/2">
-            <h2 className="font-heading text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Elevate Your <br />
-              <span className="text-brand-accent">Driving Experience.</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+              Request <span className="text-brand-accent">Service</span>
             </h2>
             <p className="text-xl text-slate-400 mb-10 font-light max-w-lg">
-              Time is your most valuable asset. We restore your vehicle to perfection while you focus on what matters. Secure your appointment today.
+              Secure your appointment for the ultimate detailing experience. We bring the showroom to you.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-5">
-              <Button href={BUSINESS_INFO.bookingLink} className="shadow-[0_0_40px_rgba(45,212,191,0.1)]">
-                Secure Your Slot
-              </Button>
-              <Button variant="outline" href={`tel:${BUSINESS_INFO.phoneClean}`}>
-                Contact Concierge
-              </Button>
-            </div>
-            
-            <div className="mt-10 flex items-center space-x-6 text-sm text-brand-muted">
-              <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-brand-accent mr-2 animate-pulse"></span> 24/7 Availability</span>
-              <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-brand-accent mr-2"></span> Fully Insured</span>
-            </div>
+            <form onSubmit={handleSubmit} className="bg-white/[0.03] backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-sm space-y-5 shadow-2xl">
+              
+              {/* Name */}
+              <div className="relative group">
+                <User className="absolute left-4 top-3.5 w-5 h-5 text-brand-muted group-focus-within:text-brand-accent transition-colors" />
+                <input 
+                  type="text" 
+                  name="name"
+                  placeholder="Full Name" 
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-brand-black/50 border border-white/10 text-white pl-12 pr-4 py-3 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-slate-600 font-light rounded-sm"
+                />
+              </div>
+
+              {/* Email & Phone */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="relative group">
+                  <Mail className="absolute left-4 top-3.5 w-5 h-5 text-brand-muted group-focus-within:text-brand-accent transition-colors" />
+                  <input 
+                    type="email" 
+                    name="email"
+                    placeholder="Email Address" 
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-brand-black/50 border border-white/10 text-white pl-12 pr-4 py-3 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-slate-600 font-light rounded-sm"
+                  />
+                </div>
+                <div className="relative group">
+                  <Phone className="absolute left-4 top-3.5 w-5 h-5 text-brand-muted group-focus-within:text-brand-accent transition-colors" />
+                  <input 
+                    type="tel" 
+                    name="phone"
+                    placeholder="Phone Number" 
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-brand-black/50 border border-white/10 text-white pl-12 pr-4 py-3 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-slate-600 font-light rounded-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Service Selection */}
+              <div className="relative group">
+                <Car className="absolute left-4 top-3.5 w-5 h-5 text-brand-muted group-focus-within:text-brand-accent transition-colors" />
+                <select 
+                  name="service"
+                  value={formData.service}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-brand-black/50 border border-white/10 text-white pl-12 pr-4 py-3 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all appearance-none cursor-pointer font-light rounded-sm"
+                >
+                  <option value="" className="bg-brand-black text-slate-500">Select Service Package</option>
+                  {SERVICES.map(s => (
+                    <option key={s.id} value={s.name} className="bg-brand-black text-white">{s.name} ({s.priceRange})</option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none border-l border-white/10 pl-3">
+                   <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-brand-muted"></div>
+                </div>
+              </div>
+
+              {/* Date & Time */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="relative group">
+                  <Calendar className="absolute left-4 top-3.5 w-5 h-5 text-brand-muted group-focus-within:text-brand-accent transition-colors" />
+                  <input 
+                    type="date" 
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-brand-black/50 border border-white/10 text-white pl-12 pr-4 py-3 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-slate-600 font-light rounded-sm [color-scheme:dark]"
+                  />
+                </div>
+                <div className="relative group">
+                  <Clock className="absolute left-4 top-3.5 w-5 h-5 text-brand-muted group-focus-within:text-brand-accent transition-colors" />
+                  <input 
+                    type="time" 
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-brand-black/50 border border-white/10 text-white pl-12 pr-4 py-3 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/50 transition-all placeholder:text-slate-600 font-light rounded-sm [color-scheme:dark]"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Button type="submit" fullWidth className="shadow-[0_0_30px_rgba(45,212,191,0.15)] hover:shadow-[0_0_50px_rgba(45,212,191,0.3)]">
+                  Confirm Booking Request
+                </Button>
+              </div>
+              
+              <div className="flex items-center justify-center space-x-6 text-[10px] uppercase tracking-widest text-brand-muted/70 mt-2">
+                  <span>Secure SSL Data</span>
+                  <span>•</span>
+                  <span>Free Cancellation</span>
+              </div>
+
+            </form>
           </div>
 
           {/* Service Area Visual */}
-          <div className="w-full lg:w-1/2">
-            <div className="relative rounded-sm overflow-hidden border border-white/10 group">
-               {/* Grayscale map for premium look */}
-              <img 
-                src="https://images.unsplash.com/photo-1580655653885-65763b2597d0?q=80&w=1200&auto=format&fit=crop" 
-                alt="Los Angeles Service Area" 
-                className="w-full h-[400px] object-cover grayscale opacity-50 group-hover:opacity-70 group-hover:grayscale-0 transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent"></div>
+          <div className="w-full lg:w-1/2 lg:pt-12">
+            <div className="relative rounded-sm overflow-hidden border border-white/10 group h-[500px] lg:h-[600px] bg-brand-black shadow-2xl">
+               
+               <MapContainer 
+                  center={center} 
+                  zoom={10} 
+                  scrollWheelZoom={false} 
+                  className="w-full h-full z-0 outline-none"
+                  zoomControl={false}
+                  dragging={true}
+                  doubleClickZoom={false}
+               >
+                  <TileLayer
+                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  />
+                  <Circle 
+                    center={center} 
+                    pathOptions={{ 
+                      color: '#2dd4bf', 
+                      fillColor: '#2dd4bf', 
+                      fillOpacity: 0.15, 
+                      weight: 1,
+                      dashArray: '4, 8' 
+                    }} 
+                    radius={radius} 
+                  >
+                  </Circle>
+                  <ZoomControl position="topright" />
+               </MapContainer>
+
+               {/* Overlay Gradients */}
+               <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent pointer-events-none z-[400]"></div>
               
-              <div className="absolute bottom-8 left-8">
-                <div className="bg-brand-black/90 backdrop-blur-md p-6 border border-white/10 max-w-xs">
+              <div className="absolute bottom-8 left-8 z-[500]">
+                <div className="bg-brand-black/90 backdrop-blur-md p-6 border border-white/10 max-w-xs shadow-lg">
                     <div className="flex items-center mb-2">
                         <MapPin className="w-5 h-5 text-brand-accent mr-2" />
                         <span className="text-white font-heading font-bold">Service Coverage</span>
