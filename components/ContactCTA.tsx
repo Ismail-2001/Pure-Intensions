@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Button from './Button';
 import { BUSINESS_INFO, SERVICES } from '../constants';
 import { MapPin, User, Mail, Phone, Car, Calendar, Clock } from 'lucide-react';
-import { MapContainer, TileLayer, Circle, ZoomControl, Popup, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, ZoomControl, Popup, Tooltip, Marker } from 'react-leaflet';
+import L from 'leaflet';
 
 const ContactCTA: React.FC = () => {
   const center: [number, number] = [34.0522, -118.2437]; // Los Angeles
@@ -37,6 +38,27 @@ const ContactCTA: React.FC = () => {
 
     return () => observer.disconnect();
   }, []);
+
+  // Custom Car Icon
+  const carIcon = L.divIcon({
+    className: 'bg-transparent',
+    html: `
+      <div class="relative w-12 h-12 flex items-center justify-center group">
+        <div class="absolute inset-0 bg-brand-accent/30 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+        <div class="relative w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(45,212,191,0.5)] border-2 border-brand-black z-10 transition-transform duration-300 group-hover:scale-110">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#020617" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+      </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
+    popupAnchor: [0, -28]
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -202,13 +224,16 @@ const ContactCTA: React.FC = () => {
                       color: '#2dd4bf', 
                       fillColor: '#2dd4bf', 
                       fillOpacity: 0.15, 
-                      weight: 2,
+                      weight: 1,
                       dashArray: '4, 8' 
                     }} 
                     radius={radius} 
-                  >
-                    <Tooltip sticky direction="top" opacity={0.9}>
-                        <span className="font-heading font-bold text-brand-black text-xs uppercase tracking-wider">Service Zone</span>
+                    interactive={false} 
+                  />
+                  
+                  <Marker position={center} icon={carIcon}>
+                    <Tooltip sticky direction="top" opacity={0.9} offset={[0, -20]}>
+                        <span className="font-heading font-bold text-brand-black text-xs uppercase tracking-wider">Service Hub</span>
                     </Tooltip>
                     <Popup closeButton={false} className="bg-transparent border-none shadow-none">
                       <div className="bg-brand-black border border-brand-accent/30 p-4 rounded shadow-2xl min-w-[220px]">
@@ -225,7 +250,8 @@ const ContactCTA: React.FC = () => {
                         </div>
                       </div>
                     </Popup>
-                  </Circle>
+                  </Marker>
+
                   <ZoomControl position="topright" />
                </MapContainer>
 
