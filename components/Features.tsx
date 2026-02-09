@@ -1,16 +1,37 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FEATURES } from '../constants';
 
 const Features: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="why-us" className="py-20 md:py-32 bg-slate-950 relative overflow-hidden">
+    <section id="why-us" className="py-20 md:py-32 bg-slate-950 relative overflow-hidden" ref={sectionRef}>
       {/* Decorative Background Blobs */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-teal-900/10 rounded-full blur-[120px] mix-blend-screen"></div>
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px] mix-blend-screen"></div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className={`container mx-auto px-4 relative z-10 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="text-center mb-16 md:mb-24">
           <span className="inline-block py-1 px-3 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold tracking-widest uppercase mb-4 border border-teal-500/20">
             Why Choose Us

@@ -1,16 +1,37 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Star, Quote } from 'lucide-react';
 import { REVIEWS, BUSINESS_INFO } from '../constants';
 
 const Testimonials: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="reviews" className="py-24 bg-brand-black relative overflow-hidden">
+    <section id="reviews" className="py-24 bg-brand-black relative overflow-hidden" ref={sectionRef}>
       {/* Subtle Background Text */}
       <div className="absolute top-10 right-0 text-[120px] md:text-[200px] font-heading font-bold text-white/[0.02] leading-none pointer-events-none select-none">
         TRUST
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className={`container mx-auto px-6 relative z-10 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="mb-20">
           <h2 className="text-xs font-bold tracking-[0.3em] text-brand-accent uppercase mb-4">Testimonials</h2>
           <h3 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Client Experiences</h3>

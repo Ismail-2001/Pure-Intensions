@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import Button from './Button';
 import { SERVICES, BUSINESS_INFO } from '../constants';
 
 const Services: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="services" className="py-24 md:py-32 bg-brand-black relative">
       {/* Background Ambience */}
@@ -18,59 +42,67 @@ const Services: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {SERVICES.map((pkg) => (
-            <div 
-              key={pkg.id} 
-              className={`
-                group relative flex flex-col h-full p-8 md:p-10 transition-all duration-500
-                ${pkg.isPopular 
-                  ? 'bg-gradient-to-b from-slate-900 to-slate-950 border border-brand-accent/30 transform md:-translate-y-4 animate-glow' 
-                  : 'bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
-              `}
+        <div 
+          ref={sectionRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto"
+        >
+          {SERVICES.map((pkg, index) => (
+            <div
+              key={pkg.id}
+              className={`${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+              style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'forwards' }}
             >
-              {pkg.isPopular && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-                  <span className="bg-brand-accent text-brand-black text-[10px] font-bold px-4 py-1 uppercase tracking-widest">
-                    Signature Choice
-                  </span>
+              <div 
+                className={`
+                  group relative flex flex-col h-full p-8 md:p-10 transition-all duration-500
+                  ${pkg.isPopular 
+                    ? 'bg-gradient-to-b from-slate-900 to-slate-950 border border-brand-accent/30 transform md:-translate-y-4 animate-glow' 
+                    : 'bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
+                `}
+              >
+                {pkg.isPopular && (
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                    <span className="bg-brand-accent text-brand-black text-[10px] font-bold px-4 py-1 uppercase tracking-widest">
+                      Signature Choice
+                    </span>
+                  </div>
+                )}
+
+                <div className="mb-8 border-b border-white/5 pb-8">
+                  <h3 className="font-heading text-2xl font-bold text-white mb-2">{pkg.name}</h3>
+                  <p className="text-sm text-brand-muted font-light leading-relaxed h-10">{pkg.description}</p>
+                  <div className="mt-6 flex items-baseline">
+                    <span className="text-3xl font-heading font-light text-brand-accent">{pkg.priceRange}</span>
+                  </div>
                 </div>
-              )}
 
-              <div className="mb-8 border-b border-white/5 pb-8">
-                <h3 className="font-heading text-2xl font-bold text-white mb-2">{pkg.name}</h3>
-                <p className="text-sm text-brand-muted font-light leading-relaxed h-10">{pkg.description}</p>
-                <div className="mt-6 flex items-baseline">
-                  <span className="text-3xl font-heading font-light text-brand-accent">{pkg.priceRange}</span>
+                <div className="flex-grow mb-10">
+                  <ul className="space-y-4">
+                    {pkg.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start group/item">
+                        <Check className="w-5 h-5 text-brand-accent/70 mr-3 flex-shrink-0 mt-0.5 group-hover/item:text-brand-accent transition-colors" />
+                        <span className="text-slate-300 text-sm font-light group-hover/item:text-white transition-colors">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
 
-              <div className="flex-grow mb-10">
-                <ul className="space-y-4">
-                  {pkg.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start group/item">
-                      <Check className="w-5 h-5 text-brand-accent/70 mr-3 flex-shrink-0 mt-0.5 group-hover/item:text-brand-accent transition-colors" />
-                      <span className="text-slate-300 text-sm font-light group-hover/item:text-white transition-colors">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <Button 
-                  href={BUSINESS_INFO.bookingLink} 
-                  variant={pkg.isPopular ? 'primary' : 'secondary'}
-                  fullWidth
-                >
-                  Reserve Now
-                </Button>
-                <Button 
-                  href={BUSINESS_INFO.bookingLink} 
-                  variant="secondary"
-                  fullWidth
-                >
-                  Book Now
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    href={BUSINESS_INFO.bookingLink} 
+                    variant={pkg.isPopular ? 'primary' : 'secondary'}
+                    fullWidth
+                  >
+                    Reserve Now
+                  </Button>
+                  <Button 
+                    href={BUSINESS_INFO.bookingLink} 
+                    variant="secondary"
+                    fullWidth
+                  >
+                    Book Now
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

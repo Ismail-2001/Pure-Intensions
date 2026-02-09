@@ -1,6 +1,27 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const Gallery: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const images = [
     {
       url: "https://images.unsplash.com/photo-1552975084-6e027cd345c2?q=80&w=1200&auto=format&fit=crop",
@@ -25,8 +46,8 @@ const Gallery: React.FC = () => {
   ];
 
   return (
-    <section id="gallery" className="py-24 bg-brand-charcoal border-t border-white/5">
-      <div className="container mx-auto px-6">
+    <section id="gallery" className="py-24 bg-brand-charcoal border-t border-white/5" ref={sectionRef}>
+      <div className={`container mx-auto px-6 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
           <div className="mb-8 md:mb-0">
             <h2 className="text-xs font-bold tracking-[0.3em] text-brand-accent uppercase mb-4">Portfolio</h2>

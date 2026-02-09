@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from './Button';
 import { BUSINESS_INFO, SERVICES } from '../constants';
 import { MapPin, User, Mail, Phone, Car, Calendar, Clock } from 'lucide-react';
@@ -16,6 +16,27 @@ const ContactCTA: React.FC = () => {
     date: '',
     time: ''
   });
+
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -37,11 +58,11 @@ const ContactCTA: React.FC = () => {
   };
 
   return (
-    <section id="booking" className="py-24 bg-brand-charcoal relative overflow-hidden border-t border-white/5">
+    <section id="booking" className="py-24 bg-brand-charcoal relative overflow-hidden border-t border-white/5" ref={sectionRef}>
       {/* Decorative Glow */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[100px] transform translate-x-1/2 -translate-y-1/2"></div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className={`container mx-auto px-6 relative z-10 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="flex flex-col lg:flex-row gap-16">
           
           {/* Booking Form Section */}
