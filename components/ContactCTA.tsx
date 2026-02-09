@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Button from './Button';
 import { BUSINESS_INFO, SERVICES } from '../constants';
 import { MapPin, User, Mail, Phone, Car, Calendar, Clock } from 'lucide-react';
-import { MapContainer, TileLayer, Circle, ZoomControl, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, ZoomControl, Popup, Tooltip } from 'react-leaflet';
 
 const ContactCTA: React.FC = () => {
   const center: [number, number] = [34.0522, -118.2437]; // Los Angeles
@@ -202,15 +202,27 @@ const ContactCTA: React.FC = () => {
                       color: '#2dd4bf', 
                       fillColor: '#2dd4bf', 
                       fillOpacity: 0.15, 
-                      weight: 1,
+                      weight: 2,
                       dashArray: '4, 8' 
                     }} 
                     radius={radius} 
                   >
-                    <Popup>
-                      <div className="font-sans text-slate-800">
-                        <strong className="block text-sm mb-1">Service Area</strong>
-                        <span className="text-xs">We provide mobile detailing services within this radius.</span>
+                    <Tooltip sticky direction="top" opacity={0.9}>
+                        <span className="font-heading font-bold text-brand-black text-xs uppercase tracking-wider">Service Zone</span>
+                    </Tooltip>
+                    <Popup closeButton={false} className="bg-transparent border-none shadow-none">
+                      <div className="bg-brand-black border border-brand-accent/30 p-4 rounded shadow-2xl min-w-[220px]">
+                        <div className="flex items-center gap-2 mb-3 border-b border-white/10 pb-2">
+                           <MapPin className="w-4 h-4 text-brand-accent" />
+                           <span className="text-white font-heading font-bold text-sm tracking-wide">Primary Coverage</span>
+                        </div>
+                        <p className="text-xs text-brand-muted leading-relaxed font-light mb-3">
+                          We provide full mobile detailing services to all locations within this 20km radius of Downtown LA.
+                        </p>
+                        <div className="flex justify-between items-center text-[10px] text-brand-accent uppercase tracking-widest">
+                           <span>No Travel Fee</span>
+                           <span>&lt;1hr Arrival</span>
+                        </div>
                       </div>
                     </Popup>
                   </Circle>
