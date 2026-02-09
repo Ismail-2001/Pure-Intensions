@@ -51,7 +51,10 @@ const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-5 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-            <Button href={BUSINESS_INFO.bookingLink}>
+            <Button 
+              href={BUSINESS_INFO.bookingLink} 
+              className="hover:scale-105 transition-transform duration-300"
+            >
               Book Your Service
             </Button>
             <Button 
