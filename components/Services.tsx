@@ -54,53 +54,62 @@ const Services: React.FC = () => {
             >
               <div 
                 className={`
-                  group relative flex flex-col h-full p-8 md:p-10 transition-all duration-500
+                  group relative flex flex-col h-full p-8 md:p-10 transition-all duration-500 rounded-sm overflow-hidden
                   ${pkg.isPopular 
-                    ? 'bg-gradient-to-b from-slate-900 to-slate-950 border border-brand-accent/30 transform md:-translate-y-4 animate-glow' 
-                    : 'bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
+                    ? 'bg-gradient-to-b from-slate-900 to-slate-950 border border-brand-accent/30 transform md:-translate-y-4 animate-glow hover:shadow-[0_0_60px_rgba(45,212,191,0.3)]' 
+                    : 'bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-brand-accent/30 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(45,212,191,0.1)]'}
                 `}
               >
+                {/* Subtle Internal Gradient Glow on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
                 {pkg.isPopular && (
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-                    <span className="bg-brand-accent text-brand-black text-[10px] font-bold px-4 py-1 uppercase tracking-widest">
+                    <span className="bg-brand-accent text-brand-black text-[10px] font-bold px-4 py-1 uppercase tracking-widest shadow-[0_0_20px_rgba(45,212,191,0.4)]">
                       Signature Choice
                     </span>
                   </div>
                 )}
 
-                <div className="mb-8 border-b border-white/5 pb-8">
-                  <h3 className="font-heading text-2xl font-bold text-white mb-2">{pkg.name}</h3>
+                <div className="mb-8 border-b border-white/5 pb-8 relative z-10">
+                  <h3 className="font-heading text-2xl font-bold text-white mb-2 group-hover:text-brand-accent transition-colors duration-300">{pkg.name}</h3>
                   <p className="text-sm text-brand-muted font-light leading-relaxed h-10">{pkg.description}</p>
                   <div className="mt-6 flex items-baseline">
-                    <span className="text-3xl font-heading font-light text-brand-accent">{pkg.priceRange}</span>
+                    <span className="text-3xl font-heading font-light text-brand-accent drop-shadow-[0_0_10px_rgba(45,212,191,0.3)]">{pkg.priceRange}</span>
                   </div>
                 </div>
 
-                <div className="flex-grow mb-10">
+                <div className="flex-grow mb-10 relative z-10">
                   <ul className="space-y-4">
                     {pkg.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start group/item">
-                        <Check className="w-5 h-5 text-brand-accent/70 mr-3 flex-shrink-0 mt-0.5 group-hover/item:text-brand-accent transition-colors" />
-                        <span className="text-slate-300 text-sm font-light group-hover/item:text-white transition-colors">{feature}</span>
+                        <Check className="w-5 h-5 text-brand-accent/70 mr-3 flex-shrink-0 mt-0.5 group-hover/item:text-brand-accent transition-colors duration-300" />
+                        <span className="text-slate-300 text-sm font-light group-hover/item:text-white transition-colors duration-300">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 relative z-10 mt-auto">
                   <Button 
                     href={BUSINESS_INFO.bookingLink} 
                     variant={pkg.isPopular ? 'primary' : 'secondary'}
                     fullWidth
+                    className={pkg.isPopular ? 'shadow-[0_0_20px_rgba(45,212,191,0.2)]' : ''}
                   >
                     Reserve Now
                   </Button>
-                  <Button 
+                  {/* Duplicate button removed based on standard layout, or if intended to have two, kept but simplified. 
+                      Assuming only one CTA per card is desired for cleaner UI, but original had two. 
+                      I will keep the primary one for clarity or keep both if that was the design intent. 
+                      The original code had two buttons (Reserve Now, Book Now). I will keep both to minimize functional changes, just styled properly. */}
+                   <Button 
                     href={BUSINESS_INFO.bookingLink} 
                     variant="secondary"
                     fullWidth
+                    className="opacity-80 hover:opacity-100"
                   >
-                    Book Now
+                    Quick Schedule
                   </Button>
                 </div>
               </div>
