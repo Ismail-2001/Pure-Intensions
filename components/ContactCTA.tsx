@@ -39,6 +39,30 @@ const ContactCTA: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
+  const locations = [
+    {
+      id: 1,
+      position: [34.0736, -118.4004] as [number, number],
+      title: "Beverly Hills",
+      benefit: "Estate Service",
+      desc: "Discreet detailing for high-profile residences."
+    },
+    {
+      id: 2,
+      position: [34.0195, -118.4912] as [number, number],
+      title: "Santa Monica",
+      benefit: "Coastal Shield",
+      desc: "Specialized protection against salt air corrosion."
+    },
+    {
+      id: 3,
+      position: [34.0928, -118.3287] as [number, number],
+      title: "Hollywood",
+      benefit: "Studio Ready",
+      desc: "On-set service for production vehicles."
+    }
+  ];
+
   // Custom Car Icon
   const carIcon = L.divIcon({
     className: 'bg-transparent',
@@ -58,6 +82,14 @@ const ContactCTA: React.FC = () => {
     iconSize: [48, 48],
     iconAnchor: [24, 24],
     popupAnchor: [0, -28]
+  });
+
+  const locationIcon = L.divIcon({
+    className: 'bg-transparent',
+    html: `<div class="w-3 h-3 bg-brand-black border border-brand-accent rounded-full shadow-[0_0_10px_rgba(45,212,191,0.8)] hover:scale-150 transition-transform duration-300 cursor-pointer"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
+    popupAnchor: [0, -10]
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -251,6 +283,21 @@ const ContactCTA: React.FC = () => {
                       </div>
                     </Popup>
                   </Marker>
+
+                  {locations.map((loc) => (
+                    <Marker key={loc.id} position={loc.position} icon={locationIcon}>
+                      <Popup closeButton={false} className="bg-transparent border-none shadow-none">
+                        <div className="bg-brand-black/95 backdrop-blur-md border border-white/20 p-3 rounded shadow-xl min-w-[160px]">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-brand-accent"></div>
+                            <span className="text-brand-accent font-bold text-[10px] uppercase tracking-wider">{loc.title}</span>
+                          </div>
+                          <div className="text-white font-heading font-semibold text-xs mb-1">{loc.benefit}</div>
+                          <p className="text-[9px] text-slate-400 leading-tight border-t border-white/10 pt-2 mt-1">{loc.desc}</p>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
 
                   <ZoomControl position="topright" />
                </MapContainer>
